@@ -4,6 +4,7 @@ const inputNombre = document.getElementById("inputNombre")
 const inputCorreo = document.getElementById("inputCorreo")
 const inputContraseña = document.getElementById("inputContraseña")
 const inputEdad = document.getElementById("inputEdad")
+const contenedorId = document.getElementById("contenedorId")
 const btnsAgregar = document.getElementsByClassName("btn-agregar")
 const btnsDetalles = document.getElementsByClassName("btn-detalles")
 
@@ -11,7 +12,7 @@ function btnAgregar(){
     btnsAgregar[0].style.display = 'block'
     btnsDetalles[0].style.display = 'none'
     btnsDetalles[1].style.display = 'none'
-
+    contenedorId.style.display = 'none'
     limpiarInput()
 }
 
@@ -19,11 +20,34 @@ function btnDetalles(id){
     btnsAgregar[0].style.display = 'none'
     btnsDetalles[0].style.display = 'block'
     btnsDetalles[1].style.display = 'block'
+    contenedorId.style.display = 'block'
     obtenerPorId(id)
 }
 
 function crear(){
-    
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+    "name": inputNombre.value,
+    "email": inputCorreo.value,
+    "password": inputContraseña.value,
+    "age": inputEdad.value
+    });
+
+    var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+    };
+
+    fetch("http://localhost/api/Client/save", requestOptions)
+    .then(response => {
+        console.log(response)
+        window.location.reload()
+    })
+    .catch(error => console.log('error', error));
 }
 
 function obtener(){
@@ -77,11 +101,44 @@ function obtenerPorId(id){
 }
 
 function eliminarPorId(){
-
+    var requestOptions = {
+        method: 'DELETE',
+        redirect: 'follow'
+    };
+    
+    fetch(`http://localhost/api/Client/${inputId.value}`, requestOptions)
+    .then(response => {
+        console.log(response)
+        window.location.reload()
+    })
+    .catch(error => console.log('error', error));
 }
 
 function actualizarPorId(){
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
+    var raw = JSON.stringify({
+    "idClient": inputId.value,
+    "name": inputNombre.value,
+    "email": inputCorreo.value,
+    "password": inputContraseña.value,
+    "age": inputEdad.value
+    });
+
+    var requestOptions = {
+    method: 'PUT',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+    };
+
+    fetch("http://localhost/api/Client/update", requestOptions)
+    .then(response => {
+        console.log(response)
+        window.location.reload()
+    })
+    .catch(error => console.log('error', error));
 }
 
 function limpiarInput(){
